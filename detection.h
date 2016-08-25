@@ -14,6 +14,9 @@
 #include <opencv2/core/core_c.h>
 #include <opencv2/highgui/highgui_c.h>
 
+
+IplImage * soustraction (IplImage * base, IplImage * filtree);
+
 //TODO nbCoutoursCorrects
 //TODO affichageStats
 
