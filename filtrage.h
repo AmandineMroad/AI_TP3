@@ -19,15 +19,12 @@
 using namespace std;
 using namespace cv;
 
-int echo();
-void test(int pos, void * gz);
-
 void setImages(IplImage ** array);
 
 void recalculeSobel(int pos);
 void recalculeCanny(int pos);
 
-IplImage * soustraction (IplImage * base, IplImage * filtree);
+
 
 
 #endif	/* FILTRAGE_H */

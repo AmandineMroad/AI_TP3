@@ -1,5 +1,6 @@
 #include "filtrage.h"
 #include "detection.h"
+#include "affichage.h"
 
 IplImage* imgSobel,
        * imgCanny,
@@ -11,10 +12,6 @@ void setImages(IplImage ** array){
     imgCanny=array[POS_CANNY];
     imgSobel=array[POS_SOBEL];
     imgBase=array[POS_INIT];
-}
-
-int echo(){
-    return 10;
 }
 
 void recalculeSobel(int pos){
@@ -30,7 +27,7 @@ void recalculeSobel(int pos){
     
     cvSobel(imgBase, imgSobel,x,y);
     cvShowImage(SOBEL, imgSobel);
-    
+    displayResults(NULL,NULL,NULL);
     
 }
 
@@ -41,41 +38,4 @@ void recalculeCanny(int pos){
     cvCanny(imgBase, imgCanny, min, max);
     cvShowImage(CANNY, imgCanny);
     soustraction(imgBase, imgCanny);
-}
-
-
-
-IplImage * soustraction (IplImage * base, IplImage * filtree){
-    CvScalar val1, val2, valOut;
-    IplImage * out = cvCreateImage(cvGetSize(base), IPL_DEPTH_8U, 1);
-    int diff,
-            width = base->width,
-            height=base->height;
-    int i,j;
-    for (i = 0; i<width; i++){
-        for(j=0; j<height; j++){
-            val1 = cvGet2D(base,i,j);
-            val2 = cvGet2D(filtree, i, j);
-            
-            diff = val1.val[0] - val2.val[0];
-            if (diff < 0) { diff = 0; }
-            valOut.val[0] = diff;
-            
-            cvSet2D(out, i, j, valOut);
-        }
-    }
-    
-    if(DEBUG){
-        cvNamedWindow("contours calculés");
-        cvShowImage("contours calculés",out);
-    }
-    
-    return out;
-}
-
-
-
-
-void test(int a, void * gz){
-    cout<<echo()<<endl;
 }
