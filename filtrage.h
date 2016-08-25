@@ -27,7 +27,7 @@ void setImages(IplImage ** array);
 void recalculeSobel(int pos);
 void recalculeCanny(int pos);
 
-IplImage * soustraction (IplImage * base, IplImage * filtree);
+
 
 
 #endif	/* FILTRAGE_H */

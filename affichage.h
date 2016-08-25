@@ -14,6 +14,7 @@
 
 
 #include "filtrage.h"
+#include "Result.h"
 
 using namespace cv;
 
@@ -29,6 +30,8 @@ void displayWindow(char * name);
 void hideWindow(char * name);
 
 void changeWindowState(int i, void * name);
+
+void displayResults(Result sobelResult, Result laplaceResult, Result cannyResult);
 
 #endif	/* AFFICHAGE_H */
 

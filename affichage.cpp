@@ -1,10 +1,14 @@
 
 #include <opencv2/highgui/highgui_c.h>
+#include <opencv2/core/types_c.h>
+#include <opencv2/core/core_c.h>
 
 #include "affichage.h"
 
 
 IplImage**  images = new IplImage*[5];
+IplImage* imgResult = cvCreateImage(cvSize(250,250), IPL_DEPTH_8U, 1);
+
 
 int sobelOrderX = 1, 
         sobelOrderY = 1;
@@ -35,6 +39,8 @@ void initFenetre(){
     cvNamedWindow(SOBEL);
     cvNamedWindow(LAPLACE);
     cvNamedWindow(CANNY);
+    cvNamedWindow(RESULTS);
+    cvResizeWindow(RESULTS, 600, 600);
     
     //Positionnement des fenetres
     cvMoveWindow(INIT, 0,0);
@@ -121,8 +127,11 @@ if (DEBUG) cout<<"change window state of : "<<(const char *)name<<" _ i = "<<i<<
          displayWindow((const char *)name);
      }
      
+}
 
-     
-     
+CvFont font = cvFont(1);
+void displayResults(Result sobelResult, Result laplaceResult, Result cannyResult){
+    cvPutText(imgResult, "test Sobel",cvPoint(10,10), &font, cvScalar(255,255,255,0)); //FIXME
+    cvShowImage(RESULTS, imgResult);
 }
 
