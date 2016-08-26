@@ -1,18 +1,8 @@
 #include "filtrage.h"
-#include "detection.h"
-#include "affichage.h"
 
-IplImage* imgSobel,
-       * imgCanny,
-       * imgBase;
-
-
-
-void setImages(IplImage ** array){
-    imgCanny=array[POS_CANNY];
-    imgSobel=array[POS_SOBEL];
-    imgBase=array[POS_INIT];
-}
+ContoursStats* resultSobel = new ContoursStats(getImage(POS_CONTOURS));
+ContoursStats* resultCanny = new ContoursStats(getImage(POS_CONTOURS));
+ContoursStats* resultLaplace= new ContoursStats(getImage(POS_CONTOURS));
 
 void recalculeSobel(int pos){
         
@@ -24,18 +14,18 @@ void recalculeSobel(int pos){
         setTrackbarPos(TB_X, SOBEL,1);
         x =1;
     }
-    
-    cvSobel(imgBase, imgSobel,x,y);
+    IplImage * imgSobel = getImage(POS_SOBEL);
+    cvSobel(getImage(POS_INIT), imgSobel,x,y);
     cvShowImage(SOBEL, imgSobel);
-    displayResults(NULL,NULL,NULL);
+    displayResults(getStat(imgSobel, resultSobel), NULL);
     
 }
 
 void recalculeCanny(int pos){
     int min = getTrackbarPos(TB_MIN, CANNY);
     int max = getTrackbarPos(TB_MAX, CANNY);
-    
-    cvCanny(imgBase, imgCanny, min, max);
+    IplImage * imgCanny = getImage(POS_CANNY);
+    cvCanny(getImage(POS_INIT), imgCanny, min, max);
     cvShowImage(CANNY, imgCanny);
-    soustraction(imgBase, imgCanny);
+    displayResults(NULL,getStat(imgCanny, resultCanny));
 }

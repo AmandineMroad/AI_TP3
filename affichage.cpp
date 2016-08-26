@@ -7,7 +7,7 @@
 
 
 IplImage**  images = new IplImage*[5];
-IplImage* imgResult = cvCreateImage(cvSize(250,250), IPL_DEPTH_8U, 1);
+IplImage* imgResult ;
 
 
 int sobelOrderX = 1, 
@@ -84,7 +84,6 @@ void initImages(){
     images[POS_CANNY] =cvCreateImage( size, depth, nChannels);
     cvCanny(imgBase, images[POS_CANNY], cannySeuilMin, cannySeuilMax);
     
-    setImages(images);
 }
 
 void createSettings(){
@@ -130,8 +129,59 @@ if (DEBUG) cout<<"change window state of : "<<(const char *)name<<" _ i = "<<i<<
 }
 
 CvFont font = cvFont(1);
-void displayResults(Result sobelResult, Result laplaceResult, Result cannyResult){
-    cvPutText(imgResult, "test Sobel",cvPoint(10,10), &font, cvScalar(255,255,255,0)); //FIXME
+CvScalar color = cvScalar(255,255,255,0);
+
+
+CvPoint pt_res_sobel_perf = cvPoint(PT_ABS_RESULT, PT_ORD_SOBEL_PERF);
+CvPoint pt_res_sobel_tfp = cvPoint(PT_ABS_RESULT, PT_ORD_SOBEL_FP);
+CvPoint pt_res_sobel_tfn = cvPoint(PT_ABS_RESULT,PT_ORD_SOBEL_FN);
+
+CvPoint pt_res_canny_perf =cvPoint(PT_ABS_RESULT, PT_ORD_CANNY_PERF);
+CvPoint pt_res_canny_tfp = cvPoint(PT_ABS_RESULT, PT_ORD_CANNY_FP);
+CvPoint pt_res_canny_tfn = cvPoint(PT_ABS_RESULT, PT_ORD_CANNY_FN);
+
+CvPoint pt_res_laplace_perf = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_PERF);
+CvPoint pt_res_laplace_tfp = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_FP);
+CvPoint pt_res_laplace_tfn = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_FN);
+
+void displayResults(ContoursStats* sobelResult, ContoursStats*cannyResult , ContoursStats*laplaceResult ){
+    if (sobelResult != NULL){
+        putResultText(sobelResult, pt_res_sobel_perf, pt_res_sobel_tfp, pt_res_sobel_tfn);
+    }
+    if (cannyResult != NULL){
+        putResultText(cannyResult, pt_res_canny_perf, pt_res_canny_tfp, pt_res_canny_tfn);
+    }
+    if (laplaceResult != NULL){
+        putResultText(laplaceResult, pt_res_laplace_perf, pt_res_laplace_tfp, pt_res_laplace_tfn);
+    }
+    
     cvShowImage(RESULTS, imgResult);
 }
 
+void putResultText(ContoursStats* result, CvPoint pt_perf, CvPoint pt_fp, CvPoint pt_fn){
+    cvPutText(imgResult, result->GetPerfString(), pt_res_sobel_perf, &font, color);
+    cvPutText(imgResult, result->GetTxFauxPosString(), pt_res_sobel_tfp, &font, color);
+    cvPutText(imgResult, result->GetTxFauxNegString(), pt_res_sobel_tfn, &font, color);
+}
+
+void initResultWindow(){
+    cvNamedWindow(RESULTS);
+    imgResult = cvCreateImage(cvSize(LARGEUR_FENETRE,HAUTEUR_FENETRE), IPL_DEPTH_8U, 1);
+    
+    cvPutText(imgResult, SOBEL, cvPoint(PT_ABS_TITRE, PT_ORD_SOBEL_TITRE), &font, color);
+    cvPutText(imgResult, PERF, cvPoint(PT_ABS_TAUX, PT_ORD_SOBEL_PERF), &font, color);
+    cvPutText(imgResult, TX_FP, cvPoint(PT_ABS_TAUX, PT_ORD_SOBEL_FP), &font, color);
+    cvPutText(imgResult, TX_FN, cvPoint(PT_ABS_TAUX, PT_ORD_SOBEL_FN), &font, color);
+    
+    cvLine(imgResult,cvPoint(0,HAUTEUR_BLOC), cvPoint(LARGEUR_FENETRE, HAUTEUR_BLOC), color);
+    cvPutText(imgResult, CANNY, cvPoint(PT_ABS_TITRE, PT_ORD_CANNY_TITRE), &font, color);
+    cvPutText(imgResult, PERF, cvPoint(PT_ABS_TAUX, PT_ORD_CANNY_PERF), &font, color);
+    cvPutText(imgResult, TX_FP, cvPoint(PT_ABS_TAUX, PT_ORD_CANNY_FP), &font, color);
+    cvPutText(imgResult, TX_FN, cvPoint(PT_ABS_TAUX, PT_ORD_CANNY_FN), &font, color);
+    
+    cvLine(imgResult,cvPoint(0,2*HAUTEUR_BLOC), cvPoint(LARGEUR_FENETRE, 2*HAUTEUR_BLOC), color);
+    cvPutText(imgResult, LAPLACE, cvPoint(PT_ABS_TITRE, PT_ORD_LAPLACE_TITRE), &font, color);
+    cvPutText(imgResult, PERF, cvPoint(PT_ABS_TAUX, PT_ORD_LAPLACE_PERF), &font, color);
+    cvPutText(imgResult, TX_FP, cvPoint(PT_ABS_TAUX, PT_ORD_LAPLACE_FP), &font, color);
+    cvPutText(imgResult, TX_FN, cvPoint(PT_ABS_TAUX, PT_ORD_LAPLACE_FN), &font, color);
+}
