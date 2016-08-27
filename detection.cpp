@@ -2,7 +2,6 @@
 #include "detection.h"
 
 IplImage * soustraction(IplImage * base, IplImage * filtree) {
-    if(DEBUG) cout<<"soustraction"<<endl;
     CvScalar val1, val2, valOut;
     IplImage * out = cvCreateImage(cvGetSize(base), IPL_DEPTH_8U, 1);
     int diff,
@@ -29,7 +28,6 @@ IplImage * soustraction(IplImage * base, IplImage * filtree) {
 }
 
 int getNbContours(const IplImage * image) {
-    if (DEBUG) cout<<"getNbContours"<<endl;
     float nbContours = 0;
     CvScalar vect;
     for (int i = 0; i < image->height; i++) {
@@ -43,7 +41,6 @@ int getNbContours(const IplImage * image) {
 }
 
 int getNbContoursCorrects(const IplImage * imageRef, const IplImage * image) {
-    if (DEBUG) cout<<"getNbContoursCorrects"<<endl;
     float nbCorrects = 0;
     CvScalar vect,
             voisin;
