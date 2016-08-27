@@ -14,6 +14,9 @@
 using namespace std;
 using namespace cv;
 
+void initResultsObjects();
+
+void calculeLaplace();
 void recalculeSobel(int pos);
 void recalculeCanny(int pos);
 

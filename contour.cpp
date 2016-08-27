@@ -36,8 +36,9 @@ int main(int argc, char** argv) {
     //Initialisation des fenetres
     initFenetre();
     
-    
+    //Attente d'appui sur une touche du clavier
     cvWaitKey(0);
+    destroyAllWindows();
     return EXIT_SUCCESS;
 }
 /**
@@ -69,10 +70,13 @@ int checkArgs(int nbArgs, char** args){
     setContoursImage(cvCloneImage(tmp));
     
     //Vérification de la taille des images
-    if (getImage(POS_CONTOURS) ->imageSize != getImage(POS_INIT) ->imageSize){
+    if (getImage(POS_CONTOURS)->imageSize != getImage(POS_INIT)->imageSize){
         cerr <<args[1]<< " et " << args[2] << "n'ont pas la meme taille. Traitement impossible.\n";
             return EXIT_FAILURE;
     }
+    
+    initResultsObjects();
+    
     return 0;
 }
 

@@ -35,9 +35,9 @@ const char * const TX_FP = "- Taux de faux positifs :";
 const char * const TX_FN = "- Taux de faux negatifs :";
 
 /*      Points resultats    */
-const int HAUTEUR_FENETRE = 300;
-const int LARGEUR_FENETRE = 600;
-const int HAUTEUR_BLOC = 100;
+const int HAUTEUR_FENETRE = 240;
+const int LARGEUR_FENETRE = 400;
+const int HAUTEUR_BLOC = HAUTEUR_FENETRE/3;
 const int PT_ABS_RESULT = 250;
 const int PT_ABS_TITRE = 10;
 const int PT_ABS_TAUX = 20;

@@ -9,26 +9,24 @@ using namespace std;
 
 class ContoursStats {
 public:
-    ContoursStats(IplImage * imageContours);
+    ContoursStats(IplImage * imageBase, IplImage * imageContours);
 
     float GetPerf() ;
     float GetTxFauxNeg() ;
     float GetTxFauxPos() ;
     int GetFauxNegatifs() const;
     int GetFauxPositifs() const;
-    void SetContoursCorrects(int contoursCorrects);
     int GetContoursCorrects() const;
     const int GetContoursReference() const;
-    void SetContoursDetectes(int contoursDetectes);
     int GetContoursDetectes() const;
-    
-    void SetNbFaux();
     
     const char * GetPerfString();
     const char * GetTxFauxPosString();
     const char * GetTxFauxNegString();
     const IplImage* GetImgContours();
-    void SetContoursReference(int contoursReference);
+    
+    ContoursStats * getResults(IplImage * imgFiltre);
+    
     
 protected:
     int contoursDetectes;
@@ -38,6 +36,7 @@ protected:
     int fauxNegatifs;
     
     IplImage * imgContours;
+    IplImage * imgBase;
     
     float txFauxPos;
     float txFauxNeg;

@@ -1,51 +1,49 @@
 #include "ContoursStats.h"
+#include "constantes.h"
+#include "detection.h"
 
 
-ContoursStats::ContoursStats(IplImage * imageContours) {
+ContoursStats::ContoursStats(IplImage * imageBase, IplImage * imageContours){
+    this->imgBase = imageBase;
     this->imgContours = imageContours;
+    this->contoursReference = getNbContours(imgContours);
 }
 
 float ContoursStats::GetPerf() {
-    this->perf = contoursCorrects/(contoursCorrects+fauxNegatifs+fauxPositifs);
+    this->perf = ((float)contoursCorrects/((float)contoursCorrects+(float)fauxNegatifs+(float)fauxPositifs))*100;
     return this->perf;
 }
 
-
 float ContoursStats::GetTxFauxNeg() {
-    this->txFauxNeg = fauxNegatifs/(contoursCorrects + fauxNegatifs + fauxPositifs);
-    return txFauxNeg;
+    this->txFauxNeg = ((float)fauxNegatifs/((float)contoursCorrects + (float)fauxNegatifs +(float) fauxPositifs))*100;
+    return this->txFauxNeg;
 }
 
 float ContoursStats::GetTxFauxPos() {
-    this->txFauxPos = fauxPositifs/(contoursCorrects + fauxNegatifs + fauxPositifs);
-    return txFauxPos;
+    this->txFauxPos = ((float)fauxPositifs/((float)contoursCorrects + (float)fauxNegatifs + (float)fauxPositifs))*100;
+    return this->txFauxPos;
 }
-
 
 const char * ContoursStats::GetPerfString(){
     stringstream stream;
-    stream << this->GetPerf();
+    stream << this->GetPerf()<<" %";
     return stream.str().c_str();
 }
 
 const char * ContoursStats::GetTxFauxPosString(){
     stringstream stream;
-    stream << this->GetTxFauxPos();
+    stream << this->GetTxFauxPos()<<" %";
     return stream.str().c_str();
 }
 
 const char * ContoursStats::GetTxFauxNegString(){
     stringstream stream;
-    stream << this->GetTxFauxNeg();
+    stream << this->GetTxFauxNeg()<<" %";
     return stream.str().c_str();
 }
 
 const IplImage* ContoursStats::GetImgContours()  {
     return imgContours;
-}
-
-void ContoursStats::SetContoursReference(int contoursReference) {
-    this->contoursReference = contoursReference;
 }
 
 int ContoursStats::GetFauxNegatifs() const {
@@ -56,10 +54,6 @@ int ContoursStats::GetFauxPositifs() const {
     return fauxPositifs;
 }
 
-void ContoursStats::SetContoursCorrects(int contoursCorrects) {
-    this->contoursCorrects = contoursCorrects;
-}
-
 int ContoursStats::GetContoursCorrects() const {
     return contoursCorrects;
 }
@@ -68,15 +62,27 @@ const int ContoursStats::GetContoursReference() const {
     return contoursReference;
 }
 
-void ContoursStats::SetContoursDetectes(int contoursDetectes) {
-    this->contoursDetectes = contoursDetectes;
-}
-
 int ContoursStats::GetContoursDetectes() const {
     return contoursDetectes;
 }
 
-void ContoursStats::SetNbFaux(){
+ContoursStats * ContoursStats::getResults(IplImage * imgFiltre){
+    if(DEBUG) cout<<"try to calcul results"<<endl;
+    //Soustraction imageBase - imgFiltre
+    IplImage * imgDetails = soustraction(imgBase, imgFiltre);
+    cvShowImage("diff", imgDetails);
+    //Comptage nb contours dans imgDetail
+    contoursDetectes = getNbContours(imgDetails);
+    //Comparaison imgFiltre / image contours de reference
+    contoursCorrects = getNbContoursCorrects(imgContours,imgDetails);
+    //MAJ des indicateurs
     fauxPositifs = contoursDetectes - contoursCorrects;
     fauxNegatifs = contoursReference - contoursCorrects;
+    if(DEBUG) cout<<"finish to calcul results : \n"
+            <<"\tcontours detectes = "<<contoursDetectes
+            <<"\n\tcontours corrects = "<<contoursCorrects
+            <<"\n\tfaux positif = "<<fauxPositifs
+            <<"\n\tfaux negatif = "<<fauxNegatifs
+            <<endl;
+    return this;
 }

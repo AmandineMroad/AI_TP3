@@ -9,17 +9,10 @@
 #include "ContoursStats.h"
 
 
-
-
 IplImage * soustraction (IplImage * base, IplImage * filtree);
 
 int getNbContours(const IplImage * image);
 int getNbContoursCorrects(const IplImage * imageRef, const IplImage * image);
-
-ContoursStats* getStat(const IplImage * image, ContoursStats * result);
-
-//TODO nbCoutoursCorrects
-//TODO affichageStats
 
 #endif	/* DETECTION_H */
 

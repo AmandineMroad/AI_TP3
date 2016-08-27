@@ -30,8 +30,9 @@ void hideWindow(char * name);
 
 void changeWindowState(int i, void * name);
 
+void initResultWindow();
 void displayResults(ContoursStats* sobelResult, ContoursStats*cannyResult , ContoursStats*laplaceResult=NULL);
 void putResultText(ContoursStats* result, CvPoint pt_perf, CvPoint pt_fp, CvPoint pt_fn);
-
+void erasePreviousResult(CvPoint pt);
 #endif	/* AFFICHAGE_H */
 
