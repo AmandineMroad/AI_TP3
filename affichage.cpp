@@ -1,31 +1,36 @@
-
-#include <opencv2/highgui/highgui_c.h>
-#include <opencv2/core/types_c.h>
-#include <opencv2/core/core_c.h>
-
 #include "affichage.h"
-
 
 IplImage**  images = new IplImage*[5];
 IplImage* imgResult ;
-
 
 int sobelOrderX = 1, 
         sobelOrderY = 1;
 int cannySeuilMin = 0,
         cannySeuilMax = 255;
 
+/**
+ * Fixe l'image de référence
+ * @param init image initiale
+ */
 void setBaseImage(IplImage * init){
     images[POS_INIT] = init;
 }
+/**
+ * Fixe l'image de reference des contours
+ * @param contours l'image des contours
+ */
 void setContoursImage(IplImage * contours){
     images[POS_CONTOURS] = contours;
 }
 
+/**
+ * Renvoie l'image correspondant à la position
+ * @param position l'indice de l'image
+ * @return 
+ */
 IplImage * getImage(int position){
     return images[position];
 }
-
 
 /**
  * Initialise les fenêtres, y insère les images et ajoute les trackbars
@@ -50,7 +55,6 @@ void initFenetre(){
     cvMoveWindow(CANNY, 60,60);
     
     //Ajout des trackbar
-    
     cvCreateTrackbar(TB_X,SOBEL,&sobelOrderX,2,recalculeSobel);
     cvCreateTrackbar(TB_Y,SOBEL,&sobelOrderY,2,recalculeSobel);
 
@@ -59,15 +63,11 @@ void initFenetre(){
     
     //Insertion des images
     initImages();
-    //cvShowImage(SOBEL, images[POS_SOBEL]);
     recalculeSobel(0);
     //cvShowImage(LAPLACE, images[POS_LAPLACE]);
     calculeLaplace();
     //cvShowImage(CANNY, images[POS_CANNY]);
     recalculeCanny(0);
-    
-    //Settings
-    createSettings();
     
 }
 
@@ -76,66 +76,26 @@ void initFenetre(){
  */
 void initImages(){
     IplImage * imgBase = images[POS_INIT];
-    //Creation et initialisation des images modifiees
+    
     CvSize size = cvSize(imgBase->width, imgBase->height);
     int depth = imgBase->depth;
     int nChannels = imgBase->nChannels;
     
+    //Creation et initialisation des images modifiees
     images[POS_SOBEL] = cvCreateImage( size, depth, nChannels);
     cvSobel(imgBase, images[POS_SOBEL], sobelOrderX, sobelOrderY);
     images[POS_LAPLACE] = cvCreateImage( size, depth, nChannels);
     cvLaplace(imgBase, images[POS_LAPLACE]);
     images[POS_CANNY] =cvCreateImage( size, depth, nChannels);
     cvCanny(imgBase, images[POS_CANNY], cannySeuilMin, cannySeuilMax);
-    
 }
 
-void createSettings(){
-    //TODO
-    //createButton("bouton sobel", changeWindowState, (void * ) SOBEL,QT_CHECKBOX, true);
-}
-
-void hideWindow(const char * name){
-    if (DEBUG) cout<<"hide "<<(const char *)name<<endl;
-    cvSaveWindowParameters(name);
-    cvDestroyWindow(name);
-}
-
-void displayWindow(const char * name){
-    if (DEBUG) cout<<"display "<<(const char *)name<<endl;
-    
-    IplImage * img = NULL;
-    
-    if (strcmp(name, SOBEL) == 0){
-         img = images[POS_SOBEL];
-    } else if (strcmp(name, LAPLACE) == 0){
-        img = images[POS_LAPLACE];
-    } else if (strcmp(name, CANNY) == 0){
-        img = images[POS_CANNY];
-    }
-    
-    cvNamedWindow(name);
-    cvShowImage(name, img); //FIXME doesn't work at all !!
-    cvLoadWindowParameters(name);
-    if (DEBUG) cout<<"waiting ... "<<endl;
-    cvWaitKey();
-    if (DEBUG) cout<<"stop waiting"<<endl;
-}
-
-void changeWindowState(int i, void * name){
-if (DEBUG) cout<<"change window state of : "<<(const char *)name<<" _ i = "<<i<<endl;
-     if (i == 0){
-         hideWindow((const char *)name);
-     } else {
-         displayWindow((const char *)name);
-     }
-     
-}
-
+/** Variables pour affichage des résultats **/
 CvFont font = cvFont(1);
 CvScalar white = cvScalar(255,255,255,0);
+CvScalar black = cvScalar(0,0,0,0);
 
-
+//point pour écriture des résultats
 CvPoint pt_res_sobel_perf = cvPoint(PT_ABS_RESULT, PT_ORD_SOBEL_PERF);
 CvPoint pt_res_sobel_tfp = cvPoint(PT_ABS_RESULT, PT_ORD_SOBEL_FP);
 CvPoint pt_res_sobel_tfn = cvPoint(PT_ABS_RESULT,PT_ORD_SOBEL_FN);
@@ -148,8 +108,13 @@ CvPoint pt_res_laplace_perf = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_PERF);
 CvPoint pt_res_laplace_tfp = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_FP);
 CvPoint pt_res_laplace_tfn = cvPoint(PT_ABS_RESULT, PT_ORD_LAPLACE_FN);
 
+/**
+ * Affiche les resultats de la detection de contours
+ * @param sobelResult   les stats de sobel
+ * @param cannyResult   les stats de canny
+ * @param laplaceResult les stats de laplace
+ */
 void displayResults(ContoursStats* sobelResult, ContoursStats*cannyResult , ContoursStats*laplaceResult ){
-    if(DEBUG) cout<<"try to display results"<<endl;
     if (sobelResult != NULL){
         putResultText(sobelResult, pt_res_sobel_perf, pt_res_sobel_tfp, pt_res_sobel_tfn);
     }
@@ -159,11 +124,16 @@ void displayResults(ContoursStats* sobelResult, ContoursStats*cannyResult , Cont
     if (laplaceResult != NULL){
         putResultText(laplaceResult, pt_res_laplace_perf, pt_res_laplace_tfp, pt_res_laplace_tfn);
     }
-    if(DEBUG) cout<<"finish to display results"<<endl;
     cvShowImage(RESULTS, imgResult);
-    
 }
 
+/**
+ * Ecrit la valeur des taux calculés
+ * @param result    les stats à afficher
+ * @param pt_perf   point où écrire le tx de performances
+ * @param pt_fp     point où écrire le tx de faux positifs
+ * @param pt_fn     point où écrire le tx de faux negatifs
+ */
 void putResultText(ContoursStats* result, CvPoint pt_perf, CvPoint pt_fp, CvPoint pt_fn){
     erasePreviousResult(pt_perf);
     cvPutText(imgResult, result->GetPerfString(), pt_perf, &font, white);
@@ -172,11 +142,19 @@ void putResultText(ContoursStats* result, CvPoint pt_perf, CvPoint pt_fp, CvPoin
     erasePreviousResult(pt_fn);
     cvPutText(imgResult, result->GetTxFauxNegString(), pt_fn, &font, white);
 }
-CvScalar black = cvScalar(0,0,0,0);
+
+/**
+ * Efface la zone de résultat correspondant au point pt
+ * @param pt le point déterminant la "ligne" à effcer
+ */
 void erasePreviousResult(CvPoint pt){
     cvRectangle(imgResult, cvPoint(pt.x, pt.y-15), cvPoint(LARGEUR_FENETRE,pt.y),black,-1);
 }
 
+/**
+ * Initialise la fenêtre d'affichage des résultats.
+ * Sépare les blocs et écrit les titres
+ */
 void initResultWindow(){
     cvNamedWindow(RESULTS);
     imgResult = cvCreateImage(cvSize(LARGEUR_FENETRE,HAUTEUR_FENETRE), IPL_DEPTH_8U, 1);

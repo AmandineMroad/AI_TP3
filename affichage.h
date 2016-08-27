@@ -14,6 +14,8 @@
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/types_c.h>
+#include <opencv2/highgui/highgui_c.h>
+#include <opencv2/core/core_c.h>
 
 using namespace cv;
 
@@ -23,14 +25,8 @@ IplImage * getImage(int position);
 
 void initFenetre();
 void initImages();
-void createSettings();
-
-void displayWindow(char * name);
-void hideWindow(char * name);
-
-void changeWindowState(int i, void * name);
-
 void initResultWindow();
+
 void displayResults(ContoursStats* sobelResult, ContoursStats*cannyResult , ContoursStats*laplaceResult=NULL);
 void putResultText(ContoursStats* result, CvPoint pt_perf, CvPoint pt_fp, CvPoint pt_fn);
 void erasePreviousResult(CvPoint pt);
