@@ -14,20 +14,7 @@
 using namespace std;
 using namespace cv;
 
-
-/* Fonctions*/
 int checkArgs(int nbArgs, char** args);
-
-void changeState(int state, void * nom);
-
-    
-/* Attributs */
-
-
-
-
-
-
 
 int main(int argc, char** argv) {
     //Vérification de la validité des arguments
