@@ -1,9 +1,5 @@
 #include "filtrage.h"
 
-/*ContoursStats* resultSobel = new ContoursStats(getImage(POS_CONTOURS));
-ContoursStats* resultCanny = new ContoursStats(getImage(POS_CONTOURS));
-ContoursStats* resultLaplace= new ContoursStats(getImage(POS_CONTOURS));
-*/
 ContoursStats* resultSobel ;
 ContoursStats* resultCanny ;
 ContoursStats* resultLaplace;
@@ -15,7 +11,6 @@ void initResultsObjects(){
 }
 
 void recalculeSobel(int pos){
-        if (DEBUG) cout<<"recalculeSobel"<<endl;
     int x = getTrackbarPos(TB_X, SOBEL);
     int y = getTrackbarPos(TB_Y, SOBEL);
     
@@ -32,7 +27,6 @@ void recalculeSobel(int pos){
 }
 
 void recalculeCanny(int pos){
-    if (DEBUG) cout<<"recalculeCanny"<<endl;
     int min = getTrackbarPos(TB_MIN, CANNY);
     int max = getTrackbarPos(TB_MAX, CANNY);
     IplImage * imgCanny = getImage(POS_CANNY);
