@@ -1,6 +1,9 @@
 #ifndef RESULT_H
 #define	RESULT_H
 
+#include "constantes.h"
+#include "detection.h"
+
 #include <iostream>
 #include <sstream>
 #include <opencv/cv.h>
@@ -41,14 +44,6 @@ protected:
     float txFauxPos;
     float txFauxNeg;
     float perf;
-    
-    
-    
-    
-private:
-    
-    
-
 };
 
 #endif	/* RESULT_H */

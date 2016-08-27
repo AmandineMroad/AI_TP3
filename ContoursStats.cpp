@@ -1,7 +1,4 @@
 #include "ContoursStats.h"
-#include "constantes.h"
-#include "detection.h"
-
 
 ContoursStats::ContoursStats(IplImage * imageBase, IplImage * imageContours){
     this->imgBase = imageBase;
@@ -67,7 +64,6 @@ int ContoursStats::GetContoursDetectes() const {
 }
 
 ContoursStats * ContoursStats::getResults(IplImage * imgFiltre){
-    if(DEBUG) cout<<"try to calcul results"<<endl;
     //Soustraction imageBase - imgFiltre
     IplImage * imgDetails = soustraction(imgBase, imgFiltre);
     cvShowImage("diff", imgDetails);
@@ -78,11 +74,6 @@ ContoursStats * ContoursStats::getResults(IplImage * imgFiltre){
     //MAJ des indicateurs
     fauxPositifs = contoursDetectes - contoursCorrects;
     fauxNegatifs = contoursReference - contoursCorrects;
-    if(DEBUG) cout<<"finish to calcul results : \n"
-            <<"\tcontours detectes = "<<contoursDetectes
-            <<"\n\tcontours corrects = "<<contoursCorrects
-            <<"\n\tfaux positif = "<<fauxPositifs
-            <<"\n\tfaux negatif = "<<fauxNegatifs
-            <<endl;
+
     return this;
 }
